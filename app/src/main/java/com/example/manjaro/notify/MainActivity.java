@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         layout.setOrientation(LinearLayout.VERTICAL);
         alert.setTitle("Add note");
         final EditText note = new EditText(MainActivity.this);
-
         note.setBackgroundResource(android.R.color.transparent);
         note.setOnFocusChangeListener(new View.OnFocusChangeListener()  {
             public void onFocusChange(View v, boolean hasFocus) {
@@ -123,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             notificationManager.createNotificationChannel(channel);
         }
     }
+
     private void showNotification(){
 
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "Notify")
@@ -134,7 +134,9 @@ public class MainActivity extends AppCompatActivity {
                 .setStyle(new NotificationCompat.BigTextStyle()
                         .bigText(alList.get(alList.size()-1)))
                 .setAutoCancel(true)
-                .setVibrate(null);
+                .setVibrate(null)
+                .setOngoing(true)
+                ;
 
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
