@@ -6,7 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Build;
+import android.os.strictmode.IntentReceiverLeakedViolation;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.ActionBar;
@@ -70,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 FileIO.writeArrayListToFile(alList,"data",getApplicationContext());
                 if(alList.isEmpty())alList.add("No reminders.");
                 lvLista.setAdapter(new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_list_item_1,alList));
+                startService(new Intent(MainActivity.this,ForegroundService.class).setAction(ForegroundService.ACTION_STOP_FOREGROUND_SERVICE));
                 return true;
             }
         });
@@ -105,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
 
                 }
-                id=createID();
                 showNotification();
             }
         });
@@ -125,25 +127,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void showNotification(){
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "Notify")
-                .setSmallIcon(R.drawable.ic_notify)
-                .setContentTitle("Notify")
-                .setContentText(alList.get(alList.size()-1))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                // Set the intent that will fire when the user taps the notification
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(alList.get(alList.size()-1)))
-                .setAutoCancel(true)
-                .setVibrate(null)
-                .setOngoing(true)
-                ;
+        startService(new Intent(this,ForegroundService.class).setAction(ForegroundService.ACTION_START_FOREGROUND_SERVICE).putExtra("lista",alList));
 
-
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());
-
-
-
-        notificationManager.notify(id, mBuilder.build());
     }
     public int createID(){
         Date now = new Date();
